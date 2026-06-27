@@ -1,0 +1,8 @@
+node_modules/
+android/app/build/
+ios/
+www/
+.capacitor/
+.env
+*.log
+.DS_Store
