@@ -35,16 +35,28 @@ jobs:
       with:
         cmdline-tools-version: '11076708'
         
+    - name: Dump Environment
+      run: |
+        echo "ANDROID_HOME=$ANDROID_HOME"
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        echo "PATH=$PATH"
+        ls -la /usr/local/lib/android/sdk 2>/dev/null || echo "No /usr/local/lib/android/sdk"
+        ls -la $ANDROID_HOME 2>/dev/null || echo "No ANDROID_HOME"
+        
+    - name: Create local.properties
+      working-directory: ./android
+      run: |
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        cat local.properties
+        
     - name: Build Android APK
       working-directory: ./android
       run: |
         chmod +x ./gradlew
         ./gradlew assembleDebug
       env:
-        ANDROID_HOME: ${{ github.workspace }}/android-sdk
-        ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
-        ANDROID_API_LEVEL: 34
-        TARGET_BUILD_API: 34
+        ANDROID_HOME: ${{ env.ANDROID_HOME }}
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
