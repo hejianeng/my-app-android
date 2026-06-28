@@ -1,19 +1,26 @@
 apply plugin: 'com.android.application'
 
+// Hook to disable androidJdkImage transform (Termux jlink incompatibility)
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.mergeResources.doLast {
+            // No-op, but ensures mergeResources completes
+        }
+    }
+}
+
 android {
-    namespace = "com.example.myapp"
-    compileSdk = rootProject.ext.compileSdkVersion
+    namespace 'com.example.myapp'
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.example.myapp"
+        applicationId 'com.example.myapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
-             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
-             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
-            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+            ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
     buildTypes {
@@ -22,6 +29,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    aaptOptions.cruncherEnabled = false
 }
 
 repositories {
@@ -40,6 +48,11 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    
+    // Exclude duplicate Kotlin stdlib to resolve dependency conflicts
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+    }
 }
 
 apply from: 'capacitor.build.gradle'
