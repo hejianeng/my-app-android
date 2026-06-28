@@ -33,7 +33,7 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       with:
-        cmdline-tools-version: '9477386'
+        cmdline-tools-version: '11076708'
         
     - name: Build Android APK
       working-directory: ./android
@@ -43,6 +43,8 @@ jobs:
       env:
         ANDROID_HOME: ${{ github.workspace }}/android-sdk
         ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
+        ANDROID_API_LEVEL: 34
+        TARGET_BUILD_API: 34
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
