@@ -48,10 +48,13 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
-    
-    // Exclude duplicate Kotlin stdlib to resolve dependency conflicts
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+}
+
+// Force consistent Kotlin version to resolve duplicate class conflicts
+configurations.all {
+    resolutionStrategy {
+        force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
     }
 }
 
